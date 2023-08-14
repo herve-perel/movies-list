@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wild Series
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-center">Liste des categories</h1>
+	{% for category in categories %}
+		<ul>
+			<li>
+				{{ category.name }}
+                <a href="{{ path("category_show", { categoryName: category.name }) }}">Voir la fiche</a>
+			</li>
+		</ul>
+	{% endfor %}
+{% endblock %}

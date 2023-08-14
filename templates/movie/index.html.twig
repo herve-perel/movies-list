@@ -1,7 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Wild Series{% endblock %}
+{% block title %}Wild Series
+{% endblock %}
 
 {% block body %}
-<h1>{{ website }} index</h1>
+	{% for movie in movies %}
+		<h1>{{ movie.title }}</h1>
+		<p>{{ movie.category.name }}</p>
+		<a href="{{ path("movie_show", { id: movie.id }) }}">Voir la fiche</a>
+	{% endfor %}
 {% endblock %}

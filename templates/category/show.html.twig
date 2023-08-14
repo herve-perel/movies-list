@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ category.name }}
+
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center">Liste des films pour la catégorie {{ category.name }}</h1>
+	{% for movie in category.movies %}
+		<h1>{{ movie.title }}</h1>
+		<p>{{ movie.synopsis }}</p>
+		<p>{{ movie.id }}</p>
+		<a href="{{ path("movie_show", { id: movie.id }) }}">Voir la fiche</a>
+	{% endfor %}
+{% endblock %}
