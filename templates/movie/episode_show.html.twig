@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Film
+	
+{% endblock %}
+
+{% block body %}
+
+	<p>{{ episode.title}}</p>
+    <p>{{ episode.number}}</p>
+	<p>{{ episode.synopsis }}</p>
+	
+
+	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
+{% endblock %}

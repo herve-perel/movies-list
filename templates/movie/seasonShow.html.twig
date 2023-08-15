@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Film
-	{{ movie.id }}
+
 {% endblock %}
 
 {% block body %}
@@ -14,9 +14,12 @@
 				<p>
 					nom de l'épisode:
 					{{ episode.title }}
+					<a href="{{ path('movie_episode_show', {"movie": "movie.id", "season":"season.id", "episode": "episode.id"}) }}">détail episode</a>
 				</p>
 			</li>
 		</ul>
+
 	{% endfor %}
+
 	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
 {% endblock %}
