@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Film
+	{{ movie.id }}
+{% endblock %}
+
+{% block body %}
+	<h1>Nom de la saison:
+		{{ season.title }}</h1>
+	<p>Season numéro :{{ season.number }}</p>
+	{% for episode in season.episodes %}
+		<ul>
+			<li>
+				<p>
+					nom de l'épisode:
+					{{ episode.title }}
+				</p>
+			</li>
+		</ul>
+	{% endfor %}
+	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
+{% endblock %}

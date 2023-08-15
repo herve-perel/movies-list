@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Movie;
+use App\Entity\Season;
 use App\Repository\MovieRepository;
+use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +23,15 @@ class MovieController extends AbstractController
         ]);
     }
 
+    #[Route('/{movie}/season/{season}',  methods: ['GET'], name: 'season_show')]
+    public function showSeason(Movie $movie, Season $season): Response
+    {
+        return $this->render('movie/seasonShow.html.twig', [
+            'movie' => $movie,
+            'season' => $season,
+        ]);
+    }
+
     #[Route('/{id}', methods: ['GET'], requirements: ['id' => '\d+'], name: 'show')]
     public function show(int $id, MovieRepository $movieRepository): Response
     {
@@ -27,7 +39,7 @@ class MovieController extends AbstractController
 
         if (!$movie) {
             throw $this->createNotFoundException(
-                'No movie with id : '.$id.' found in movie\'s table.'
+                'No movie with id : ' . $id . ' found in movie\'s table.'
             );
         }
 

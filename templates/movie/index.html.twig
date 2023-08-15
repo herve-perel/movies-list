@@ -4,9 +4,23 @@
 {% endblock %}
 
 {% block body %}
-	{% for movie in movies %}
-		<h1>{{ movie.title }}</h1>
-		<p>{{ movie.category.name }}</p>
-		<a href="{{ path("movie_show", { id: movie.id }) }}">Voir la fiche</a>
-	{% endfor %}
+	<h1 class="text-center display-1 my-5">Liste des Films</h1>
+	<div class="container">
+		<div class="indexFilm my-5">
+			<div class="row">
+				{% for movie in movies %}
+					<div class="col-lg-3 col-md-6">
+						<div class="card my-3">
+							<div class="card-body bg-primary text-secondary rounded-bottom">
+								<h1>{{ movie.title }}</h1>
+								<p>{{ movie.category.name }}</p>
+								<p class="card-text">{{ movie.synopsis }}</p>
+								<a class="text-secondary" href="{{ path("movie_show", { id: movie.id }) }}">Voir la fiche</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 {% endblock %}
