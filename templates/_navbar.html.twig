@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+  <a class="navbar-brand text-secondary mx-3 p-4" href="{{ path('/app_index') }}">Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse d-flex justify-content-end mx-3" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-secondary" href="{{ path('movie_index') }}">Film</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-secondary" href="{{ path('category_index') }}">Category</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-secondary" href="#">Episode</a>
+      </li>
+    </ul>
+  </div>
+</nav>

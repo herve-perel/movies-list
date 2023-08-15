@@ -9,5 +9,12 @@
 	<p>{{ movie.category.name }}</p>
 	<p>{{ movie.synopsis }}</p>
 	<p>{{ movie.id }}</p>
+	{% for season in movie.seasons %}
+		<p>Season numéro :{{ season.number }}</p>
+		<p>Nom de la saison:
+			{{ season.title }}</p>
+		<a href="{{ path('movie_season_show', { "movie": movie.id,"season": season.id}) }}">Voir détail de la saison</a>
+	{% endfor %}
+
 	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
 {% endblock %}
