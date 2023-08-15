@@ -6,26 +6,25 @@ use App\Entity\Movie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class MovieFixtures extends Fixture implements DependentFixtureInterface
-
 {
+   
+
     public function load(ObjectManager $manager): void
-    {
+    { 
+        $faker = Factory::create();
+        
         for ($i = 0; $i < 10; $i++) {
             $movie = new Movie();
-            $movie->setTitle('movie');
-            $movie->setSynopsis('bien bien');
+            $movie->setTitle($faker->title());
+            $movie->setSynopsis($faker->paragraph(10));
             $movie->setCategory($this->getReference('category_Horreur'));
+            $this->addReference('movie_' . $i, $movie);
+
             $manager->persist($movie);
         }
-
-        $movie = new Movie();
-        $movie->setTitle('Arcane');
-        $movie->setSynopsis('bien bien');
-        $movie->setCategory($this->getReference('category_Horreur'));
-        $this->addReference('movie_Arcane', $movie);
-        $manager->persist($movie);
 
         $manager->flush();
     }
