@@ -20,7 +20,7 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
             $movie = new Movie();
             $movie->setTitle($faker->title());
             $movie->setSynopsis($faker->paragraph(10));
-            $movie->setCategory($this->getReference('category_Horreur'));
+            $movie->setCategory($this->getReference('category_' .  $faker->randomElement(CategoryFixtures::CATEGORIES)));
             $this->addReference('movie_' . $i, $movie);
 
             $manager->persist($movie);

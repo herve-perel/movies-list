@@ -34,6 +34,7 @@ class CategoryController extends AbstractController
 
         if ($form->isSubmitted()) {
             $categoryRepository->save($category, true);
+            $this->addFlash('success', 'La categorie a bien été ajouté');
             return $this->redirectToRoute('category_index');
         }
 
@@ -54,7 +55,7 @@ class CategoryController extends AbstractController
 
         return $this->render('category/show.html.twig', [
             'category' => $category,
-            'movies' => $movieRepository->findBy(['category' => $category], ['id' => 'DESC'], 3, 0),
+            'movies' => $movieRepository->findBy(['category' => $category], ['id' => 'DESC']),
         ]);
     }
 }

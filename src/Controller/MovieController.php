@@ -7,6 +7,7 @@ use App\Entity\Movie;
 use App\Entity\Season;
 use App\Repository\MovieRepository;
 use App\Form\MovieType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,26 +35,14 @@ class MovieController extends AbstractController
         $form = $this->createForm(MovieType::class, $movie);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted()&& $form->isValid()) {
             $movieRepository->save($movie, true);
+            $this->addFlash('success', 'The new movie has been created');
             return $this->redirectToRoute('movie_index');
         }
 
         return $this->render('movie/new.html.twig', [
             'form' => $form,
-        ]);
-    }
-
-    #[Route('/{movie}/season/{season}/episode/{episode}',  methods: ['GET'], name: 'episode_show')]
-    // #[Entity('program', options: ['mapping' => ['movie_id' => 'id']])]
-    // #[Entity('program', options: ['mapping' => ['season_id' => 'id']])]
-    // #[Entity('comment', options: ['mapping' => ['episode_id' => 'id']])]
-    public function showEpisode(Movie $movie, Season $season, Episode $episode): Response
-    {
-        return $this->render('movie/episode_show.html.twig', [
-            'movie' => $movie->getId(),
-            'season' => $season->getId(),
-            'episode' => $episode->getId(),
         ]);
     }
 
@@ -66,17 +55,33 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', methods: ['GET'], requirements: ['id' => '\d+'], name: 'show')]
+    #[Route('/{id}', methods: ['GET'], name: 'show')]
     public function show(Movie $movie): Response
     {
-        if (!$movie) {
-            throw $this->createNotFoundException(
-                'No movie with id : ' . $movie . ' found in movie\'s table.'
-            );
-        }
-
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
         ]);
+    }
+
+    #[Route('/{movie}/season/{season}/episode/{episode}',  methods: ['GET'], name: 'episode_show')]
+    public function showEpisode(Movie $movie, Season $season, Episode $episode): Response
+    {
+        return $this->render('movie/episode_show.html.twig', [
+            'movie' => $movie->getId(),
+            'season' => $season->getId(),
+            'episode' => $episode->getId(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($movie);
+            $entityManager->flush();
+            $this->addFlash('danger', 'Le film a bien été supprimé');
+        }
+
+        return $this->redirectToRoute('movie_index', [], Response::HTTP_SEE_OTHER);
     }
 }
