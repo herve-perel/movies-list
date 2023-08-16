@@ -12,8 +12,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[Route('/movie', name: 'movie_')]
 class MovieController extends AbstractController
@@ -30,17 +32,25 @@ class MovieController extends AbstractController
 
     #[Route('/new', name: 'new')]
 
-    public function new(Request $request, MovieRepository $movieRepository, SluggerInterface $slugger): Response
+    public function new(Request $request, MovieRepository $movieRepository, SluggerInterface $slugger, MailerInterface $mailer): Response
 
     {
         $movie = new Movie();
         $form = $this->createForm(MovieType::class, $movie);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()&& $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $slug = $slugger->slug(($movie->getTitle()));
             $movie->setSlug($slug);
             $movieRepository->save($movie, true);
+
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to('your_email@example.com')
+                ->subject('Une nouvelle série vient d\'être publiée !')
+                ->html($this->renderView('movie/newMovieEmail.html.twig', ['movie' => $movie]));  
+            $mailer->send($email);
+
             $this->addFlash('success', 'The new movie has been created');
             return $this->redirectToRoute('movie_index');
         }
@@ -81,7 +91,7 @@ class MovieController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $movie->getId(), $request->request->get('_token'))) {
             $entityManager->remove($movie);
             $entityManager->flush();
             $this->addFlash('danger', 'Le film a bien été supprimé');

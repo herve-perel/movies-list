@@ -1,0 +1,14 @@
+{% extends "_layoutEmail.html.twig" %}
+
+{% block body %}
+	<h1>New program
+		{{ movie.title }}
+		created</h1>
+
+	<p>Hello, the new program
+		{{ movie.title }}
+		has been created on Wild Series</p>
+
+	<p>Synopsis :
+		{{ movie.synopsis }}</p>
+{% endblock %}
