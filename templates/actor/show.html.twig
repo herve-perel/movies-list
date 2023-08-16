@@ -11,7 +11,7 @@
 	<ul>
 		{% for movie in actor.movies %}
 			<li>
-				<a class="text-primary" href="{{ path('movie_show', {'id': movie.id}) }}" >{{ movie.title }}</a>
+				<a class="text-primary" href="{{ path('movie_show', {'slug': movie.slug}) }}" >{{ movie.title }}</a>
 			</li>
 		{% else %}
 			<li>Aucun acteur pour cette série</li>

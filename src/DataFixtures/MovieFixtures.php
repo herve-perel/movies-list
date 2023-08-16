@@ -7,10 +7,15 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class MovieFixtures extends Fixture implements DependentFixtureInterface
 {
-   
+   private SluggerInterface $slugger;
+   public function __construct(SluggerInterface $slugger)
+   {
+    $this->slugger = $slugger;
+   }
 
     public function load(ObjectManager $manager): void
     { 
@@ -21,6 +26,8 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
             $movie->setTitle($faker->title());
             $movie->setSynopsis($faker->paragraph(10));
             $movie->setCategory($this->getReference('category_' .  $faker->randomElement(CategoryFixtures::CATEGORIES)));
+            $movie->setSlug(strtolower($this->slugger->slug($movie->getTitle())));
+
             $this->addReference('movie_' . $i, $movie);
 
             $manager->persist($movie);

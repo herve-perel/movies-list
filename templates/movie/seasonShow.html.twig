@@ -12,10 +12,12 @@
 		<ul>
 			<li>
 				<p>
-					nom de l'épisode:
-					{{ episode.title }}
-					<a href="{{ path('movie_episode_show', {"movie": "movie.id", "season":"season.id", "episode": "episode.id"}) }}">détail episode</a>
+					nom de l'épisode:{{ episode.title }}
 				</p>
+				<p>{{episode.synopsis}}</p>
+
+				<a href="{{path('movie_episode_show',{'movieSlug':movie.slug, 'season':season.id, 'episodeSlug':episode.Slug})}}">En savoir plus</a>
+
 			</li>
 		</ul>
 
