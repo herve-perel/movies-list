@@ -5,16 +5,38 @@
 {% endblock %}
 
 {% block body %}
-	<h1>{{ movie.title }}</h1>
-	<p>{{ movie.category.name }}</p>
-	<p>{{ movie.synopsis }}</p>
-	<p>{{ movie.id }}</p>
-	{% for season in movie.seasons %}
-		<p>Season numéro :{{ season.number }}</p>
-		<p>Nom de la saison:
-			{{ season.title }}</p>
-		<a href="{{ path('movie_season_show', { "movie": movie.id,"season": season.id}) }}">Voir détail de la saison</a>
-	{% endfor %}
+	<div class="container">
+		<div class="my-5">
+			<h1>{{ movie.title }}</h1>
+			<p>{{ movie.category.name }}</p>
+			<p>{{ movie.synopsis }}</p>
+			<div class="row">
+				{% for season in movie.seasons %}
+					<div class="col-lg-3 col-md-6">
+						<div class="card my-3">
+							<div class="card-body bg-primary text-secondary rounded">
+								<p>Season numéro :{{ season.number }}</p>
+								<p>Nom de la saison:
+									{{ season.title }}</p>
+							</div>
+						</div>
+					</div>
+					{{ include('movie/_delete_form.html.twig') }}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<strong>Acteurs :</strong>
+	<ul>
+		{% for actor in movie.actors %}
+			<li>
+				<a href="{{ path('actor_show', {'id': actor.id})}}">{{ actor.name }}</a>
+			</li>
+		{% else %}
+			<li>Aucun acteur pour cette série</li>
+		{% endfor %}
+	</ul>
 
-	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
+
+	<a class="btn btn-primary mx-5 text-secondary" href="{{ path('movie_index') }}">Retour à la liste de film</a>
 {% endblock %}

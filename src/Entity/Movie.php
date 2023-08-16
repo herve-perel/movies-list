@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
+
 class Movie
 {
     #[ORM\Id]
@@ -17,24 +20,30 @@ class Movie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $synopsis = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $poster = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class)]
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, cascade: ["remove"])]
     private Collection $seasons;
+
+    #[ORM\ManyToMany(targetEntity: Actor::class, mappedBy: 'movie')]
+    private Collection $actors;
 
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
+        $this->actors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +124,33 @@ class Movie
             if ($season->getMovie() === $this) {
                 $season->setMovie(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Actor>
+     */
+    public function getActors(): Collection
+    {
+        return $this->actors;
+    }
+
+    public function addActor(Actor $actor): static
+    {
+        if (!$this->actors->contains($actor)) {
+            $this->actors->add($actor);
+            $actor->addMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActor(Actor $actor): static
+    {
+        if ($this->actors->removeElement($actor)) {
+            $actor->removeMovie($this);
         }
 
         return $this;
