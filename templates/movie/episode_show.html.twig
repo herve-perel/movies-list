@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Film
-	
+
 {% endblock %}
 
 {% block body %}
 
-	<p>{{ episode.title}}</p>
-    <p>{{ episode.number}}</p>
+	<h1>{{ season.movie.slug }}</h1>
+	<h3>Nom de l'episode :
+		{{episode.slug }}</h3>
+	<h2>Épisode n°{{  episode.number }}</h2>
 	<p>{{ episode.synopsis }}</p>
-	
+
 
 	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
 {% endblock %}

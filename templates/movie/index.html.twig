@@ -15,7 +15,7 @@
 								<h1>{{ movie.title }}</h1>
 								<p>{{ movie.category.name }}</p>
 								<p class="card-text">{{ movie.synopsis|u.truncate(50) }}...</p>
-								<a class="text-secondary" href="{{ path("movie_show", { id: movie.id }) }}">Voir la fiche</a>
+								<a class="text-secondary" href="{{ path("movie_show", { slug: movie.slug }) }}">Voir la fiche</a>
 							</div>
 						</div>
 					</div>

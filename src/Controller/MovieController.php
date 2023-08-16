@@ -7,11 +7,13 @@ use App\Entity\Movie;
 use App\Entity\Season;
 use App\Repository\MovieRepository;
 use App\Form\MovieType;
+use App\Service\ProgramDuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/movie', name: 'movie_')]
 class MovieController extends AbstractController
@@ -28,7 +30,7 @@ class MovieController extends AbstractController
 
     #[Route('/new', name: 'new')]
 
-    public function new(Request $request, MovieRepository $movieRepository): Response
+    public function new(Request $request, MovieRepository $movieRepository, SluggerInterface $slugger): Response
 
     {
         $movie = new Movie();
@@ -36,6 +38,8 @@ class MovieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()&& $form->isValid()) {
+            $slug = $slugger->slug(($movie->getTitle()));
+            $movie->setSlug($slug);
             $movieRepository->save($movie, true);
             $this->addFlash('success', 'The new movie has been created');
             return $this->redirectToRoute('movie_index');
@@ -46,7 +50,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{movie}/season/{season}',  methods: ['GET'], name: 'season_show')]
+    #[Route('/{slug}/season/{season}',  methods: ['GET'], name: 'season_show')]
     public function showSeason(Movie $movie, Season $season): Response
     {
         return $this->render('movie/seasonShow.html.twig', [
@@ -55,21 +59,22 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', methods: ['GET'], name: 'show')]
-    public function show(Movie $movie): Response
+    #[Route('/{slug}', methods: ['GET'], name: 'show')]
+    public function show(Movie $movie, ProgramDuration $programDuration): Response
     {
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
+            'programDuration' => $programDuration->calculate($movie)
         ]);
     }
 
-    #[Route('/{movie}/season/{season}/episode/{episode}',  methods: ['GET'], name: 'episode_show')]
+    #[Route('/{movieSlug}/season/{season}/episode/{episodeSlug}',  methods: ['GET'], name: 'episode_show')]
     public function showEpisode(Movie $movie, Season $season, Episode $episode): Response
     {
         return $this->render('movie/episode_show.html.twig', [
-            'movie' => $movie->getId(),
-            'season' => $season->getId(),
-            'episode' => $episode->getId(),
+            'movie' => $movie,
+            'season' => $season,
+            'episode' => $episode,
         ]);
     }
 
