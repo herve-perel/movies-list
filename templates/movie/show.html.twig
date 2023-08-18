@@ -1,47 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Film
-	{{ movie.slug }}
+{% block title %}
+  Film
+  {{ movie.slug }}
 {% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div class="my-5">
-			<h1>{{ movie.title }}</h1>
-			<p>{{ movie.category.name }}</p>
-			<p>{{ movie.synopsis }}</p>
-			<p>Temps de visionnage pour la série:
-				{{ programDuration }}
-			</p>
-			<div class="row">
-				{% for season in movie.seasons %}
-					<div class="col-lg-3 col-md-6">
-						<div class="card my-3">
-							<div class="card-body bg-primary text-secondary rounded">
-								<p>Season numéro :{{ season.number }}</p>
-								<p>Nom de la saison:
-									{{ season.title }}</p>
-								<a class="text-secondary" href="{{ path('movie_season_show', {'slug': movie.slug, 'season': season.id }) }}">{{ movie.title }}</a>
-							</div>
+  <div class="container">
+    <div class="my-5">
+      <img src="{{ vich_uploader_asset(movie) }}" alt="{{ movie.title }}" />
+      <h1>{{ movie.title }}</h1>
+      <p>{{ movie.category.name }}</p>
+      <p>{{ movie.synopsis }}</p>
+      <p>Temps de visionnage pour la série:
+        {{ programDuration }}</p>
+      <div class="row">
+        {% for season in movie.seasons %}
+          <div class="col-lg-3 col-md-6">
+            <div class="card my-3">
+              <div class="card-body bg-primary text-secondary rounded">
+                <p>Season numéro :{{ season.number }}</p>
+                <p>Nom de la saison:
+                  {{ season.title }}</p>
+                <a class="text-secondary" href="{{ path('movie_season_show', { slug: movie.slug, season: season.id }) }}">{{ movie.title }}</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <strong>Acteurs :</strong>
+  <ul>
+    {% for actor in movie.actors %}
+      <li>
+        <a href="{{ path('actor_show', { id: actor.id }) }}">{{ actor.name }}</a>
+      </li>
+    {% else %}
+      <li>Aucun acteur pour cette série</li>
+    {% endfor %}
+  </ul>
 
-
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-	<strong>Acteurs :</strong>
-	<ul>
-		{% for actor in movie.actors %}
-			<li>
-				<a href="{{ path('actor_show', {'id': actor.id})}}">{{ actor.name }}</a>
-			</li>
-		{% else %}
-			<li>Aucun acteur pour cette série</li>
-		{% endfor %}
-	</ul>
-
-
-	<a class="btn btn-primary mx-5 text-secondary" href="{{ path('movie_index') }}">Retour à la liste de film</a>
+  <a class="btn btn-primary mx-5 text-secondary" href="{{ path('movie_index') }}">Retour à la liste de film</a>
 {% endblock %}
