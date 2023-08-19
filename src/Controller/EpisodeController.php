@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Episode;
+use App\Form\CommentType;
 use App\Form\EpisodeType;
+use App\Repository\CommentRepository;
 use App\Repository\EpisodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,11 +42,11 @@ class EpisodeController extends AbstractController
             $entityManager->flush();
 
             $email = (new Email())
-            ->from($this->getParameter('mailer_from'))
-            ->to('your_email@example.com')
-            ->subject('Un nouvel episode vient d\'être publiée !')
-            ->html($this->renderView('episode/newEpisodeEmail.html.twig', ['episode' => $episode]));  
-        $mailer->send($email);
+                ->from($this->getParameter('mailer_from'))
+                ->to('your_email@example.com')
+                ->subject('Un nouvel episode vient d\'être publiée !')
+                ->html($this->renderView('episode/newEpisodeEmail.html.twig', ['episode' => $episode]));
+            $mailer->send($email);
 
             $this->addFlash('success', 'Le nouvelle épisode a été créé');
 
@@ -57,10 +60,23 @@ class EpisodeController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'show', methods: ['GET'])]
-    public function show(Episode $episode): Response
+    public function show(Episode $episode, Request $request, CommentRepository $commentRepository): Response
     {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUser($this->getUser());
+            $comment->setEpisode($episode);
+            $commentRepository->save($comment, true);
+            $this->addFlash('success', 'Votre commentaire a bien été enregistré');
+            return $this->redirectToRoute('episode/show.html.twig', ['id' => $episode->getId(), Response::HTTP_SEE_OTHER]);
+        }
+
         return $this->render('episode/show.html.twig', [
             'episode' => $episode,
+            'form' => $form,
         ]);
     }
 
@@ -87,7 +103,7 @@ class EpisodeController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Episode $episode, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$episode->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $episode->getId(), $request->request->get('_token'))) {
             $entityManager->remove($episode);
             $entityManager->flush();
             $this->addFlash('danger', 'L"épisode" a bien été supprimé');

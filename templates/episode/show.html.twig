@@ -1,34 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Episode{% endblock %}
+{% block title %}
+  Episode
+{% endblock %}
 
 {% block body %}
+  <div class="container">
     <h1>Episode</h1>
+    <p>{{ episode.id }}</p>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ episode.id }}</td>
-            </tr>
-            <tr>
-                <th>Number</th>
-                <td>{{ episode.number }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ episode.title }}</td>
-            </tr>
-            <tr>
-                <th>Synopsis</th>
-                <td>{{ episode.synopsis }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <h4>Number</h4>
+    <p>{{ episode.number }}</p>
 
-    <a href="{{ path('episode_index') }}">back to list</a>
+    <h4>Title</h4>
+    <p>{{ episode.title }}</p>
 
-    <a href="{{ path('episode_edit', {'id': episode.id}) }}">edit</a>
+    <h4>Synopsis</h4>
+    <p>{{ episode.synopsis }}</p>
+  </div>
+  {% if app.user %}
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+  {% endif %}
+  <a href="{{ path('episode_index') }}">back to list</a>
 
-    {{ include('episode/_delete_form.html.twig') }}
+  <a href="{{ path('episode_edit', { slug: episode.slug }) }}">edit</a>
+
+  {{ include('episode/_delete_form.html.twig') }}
 {% endblock %}

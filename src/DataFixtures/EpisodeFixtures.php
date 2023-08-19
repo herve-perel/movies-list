@@ -12,10 +12,10 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class EpisodeFixtures extends Fixture implements DependentFixtureInterface
 {
     private SluggerInterface $slugger;
-   public function __construct(SluggerInterface $slugger)
-   {
-    $this->slugger = $slugger;
-   }
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
@@ -28,7 +28,7 @@ class EpisodeFixtures extends Fixture implements DependentFixtureInterface
             $episode->setSeason($this->getReference('season_' . $i % 20));
             $episode->setDuration($faker->numberBetween(10, 60));
             $episode->setSlug(strtolower($this->slugger->slug($episode->getTitle())));
-
+            $this->addReference('episode_' . $i, $episode);
 
             $manager->persist($episode);
         }
