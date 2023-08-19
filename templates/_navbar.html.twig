@@ -1,8 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
   <a class="navbar-brand text-secondary mx-3 p-4" href="{{ path('/app_index') }}">Home</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
   <div class="collapse navbar-collapse d-flex justify-content-end mx-3" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item active">
@@ -14,6 +12,12 @@
       <li class="nav-item">
         <a class="nav-link text-secondary" href="#">Episode</a>
       </li>
+      {% if app.user %}
+    <p class="text-secondary m-2">{{ app.user.email }}</p>
+        <a class="nav-link text-secondary" href="{{ path('app_logout') }}">Se déconnecter</a>
+      {% else %}
+        <a class="nav-link text-secondary" href="{{ path('app_login') }}">Se connecter</a>
+      {% endif %}
     </ul>
   </div>
 </nav>

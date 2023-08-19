@@ -1,17 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Film
-
+{% block title %}
+  Film
 {% endblock %}
 
 {% block body %}
+  <div class="container">
+    <h1>{{ season.movie.slug }}</h1>
+    <h3>
+      Nom de l'episode :
+      {{ episode.slug }}
+    </h3>
+    <h2>Épisode n°{{ episode.number }}</h2>
+    <p>{{ episode.synopsis }}</p>
+      {% for comment in episode.comments %}
+					<div class="accordion-body bg-light rounded p-0">
+						<div class="comment bg-white rounded p-4 pt-2">
+							<div class="d-flex p-4 align-items-center ps-0">
+								<a href="{{ path('app_profile', {'id': comment.user.id}) }}">
+									<img src="{{ asset('uploads/avatar/' ~ comment.user.avatar) }}" alt="Portrait"></a>
 
-	<h1>{{ season.movie.slug }}</h1>
-	<h3>Nom de l'episode :
-		{{episode.slug }}</h3>
-	<h2>Épisode n°{{  episode.number }}</h2>
-	<p>{{ episode.synopsis }}</p>
+								<p class="text-primary fw-bold ms-4 justify-content-between">{{ comment.user.name }}</p>
+								<p class="text-muted ms-auto">{{"now"|date('d/m/Y')}}</p>
 
+							</div>
+							<p class="text-primary">{{ comment.comment|nl2br}}</p>
+						</div>
+					</div>
+				{% endfor %}
+    {% if app.user %}
+      {{ form_start(form) }}
+      {{ form_widget(form) }}
+      <button class="btn btn-primary">{{ button_label|default('Ajouter') }}</button>
+      {{ form_end(form) }}
+      {% if is_granted('ROLE_ADMIN') %}
+    <a class="text-secondary" href="{{ path('movie_edit', { slug: movie.slug }) }}">Éditer</a>
 
-	<a href="{{ path('movie_index') }}">Retour à la liste de film</a>
+    {% endif %}
+    {% endif %}
+  </div>
+  <a class="btn btn-secondary" href="{{ path('movie_index') }}">Retour à la liste de film</a>
 {% endblock %}
